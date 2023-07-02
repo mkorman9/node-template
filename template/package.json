@@ -1,0 +1,20 @@
+{
+  "name": "my-node-app",
+  "version": "1.0.0",
+  "description": "",
+  "author": "Michal Korman",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "lint": "eslint src/**/*.ts",
+    "format": "eslint src/**/*.ts --fix",
+    "test": "jest",
+    "build": "tsc --build",
+    "start": "tsc-watch --onSuccess \"node ./dist\"",
+    "exec": "exec node --enable-source-maps ./dist"
+  },
+  "devDependencies": {
+  },
+  "dependencies": {
+  }
+}
