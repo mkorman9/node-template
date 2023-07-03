@@ -1,11 +1,11 @@
 {
   "name": "typescript-node-app",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "",
   "main": "index.js",
   "type": "module",
   "bin": {
-    "create": "./index.js"
+    "typescript-node-app": "./index.js"
   },
   "author": "Michal Korman",
   "license": "MIT"
