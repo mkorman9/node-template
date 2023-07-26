@@ -16,7 +16,8 @@ fs.cpSync(path.join(__dirname, '__gitignore'), path.join(process.cwd(), '.gitign
 
 // install dependencies
 const PROD_DEPS = [
-  'dotenv'
+  'dotenv',
+  'winston'
 ];
 
 const DEV_DEPS = [
