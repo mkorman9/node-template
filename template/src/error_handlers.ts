@@ -9,10 +9,10 @@ process.on('uncaughtException', err => {
   log.error('Unhandled exception', { stack: err.stack });
 });
 
-process.on('unhandledRejection', (reason, p) => {
+process.on('unhandledRejection', reason => {
   if (reason instanceof Error) {
-    log.error(`Unhandled Promise (${p}) rejection`, { stack: reason.stack });
+    log.error(`Unhandled Promise rejection`, { stack: reason.stack });
   } else {
-    log.error(`Unhandled Promise (${p}) rejection: ${reason}`);
+    log.error(`Unhandled Promise rejection: ${reason}`);
   }
 });
