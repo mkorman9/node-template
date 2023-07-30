@@ -26,10 +26,7 @@ const DEV_DEPS = [
   '@typescript-eslint/eslint-plugin',
   '@typescript-eslint/parser',
   'eslint',
-  'eslint-config-prettier',
-  'eslint-plugin-prettier',
   'jest',
-  'prettier',
   'ts-jest',
   'tsc-watch',
   'typescript'
