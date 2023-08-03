@@ -11,7 +11,7 @@
     "fix": "eslint --ext .ts --fix src/",
     "test": "jest --detectOpenHandles --forceExit",
     "build": "tsc --build",
-    "start": "tsc-watch --onSuccess \"node ./dist\"",
+    "start": "tsc-watch --noClear --onSuccess \"node ./dist\"",
     "exec": "exec node --enable-source-maps ./dist"
   },
   "devDependencies": {
