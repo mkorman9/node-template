@@ -12,7 +12,7 @@
     "test": "jest --detectOpenHandles --forceExit",
     "build": "tsc --build",
     "start": "tsc-watch --noClear --onSuccess \"node .\"",
-    "exec": "exec node --enable-source-maps ."
+    "serve": "exec node --enable-source-maps ."
   },
   "devDependencies": {
   },
