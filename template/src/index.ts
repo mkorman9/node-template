@@ -1,4 +1,4 @@
 import './config';
 import './hooks';
 
-console.log('Hello world');
+console.log('✅ Application has started successfully');
