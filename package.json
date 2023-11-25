@@ -1,12 +1,21 @@
 {
-  "name": "typescript-node-app",
-  "version": "1.4.13",
+  "name": "node-template-project",
+  "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "type": "module",
-  "bin": {
-    "typescript-node-app": "./index.js"
-  },
   "author": "Michal Korman",
-  "license": "MIT"
+  "license": "MIT",
+  "private": true,
+  "main": "lib/index.js",
+  "scripts": {
+    "lint": "eslint --ext .ts src/",
+    "fix": "eslint --ext .ts --fix src/",
+    "test": "jest --detectOpenHandles --forceExit",
+    "build": "tsc --build",
+    "start": "tsc-watch --noClear --onSuccess \"node .\"",
+    "serve": "exec node --enable-source-maps ."
+  },
+  "devDependencies": {
+  },
+  "dependencies": {
+  }
 }
