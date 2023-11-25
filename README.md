@@ -3,6 +3,6 @@
 Creates Node app from scratch in the current directory. Usage:
 
 ```sh
-npm install -g typescript-node-app@1.4.12
+npm install -g typescript-node-app@1.4.13
 npx typescript-node-app
 ```
