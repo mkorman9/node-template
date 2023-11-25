@@ -18,16 +18,16 @@ git clone git@github.com:mkorman9/node-template.git "${PROJECT_NAME}" && \
   cp "${PROJECT_NAME}/.env.template" "${PROJECT_NAME}/.env" && \
   cd "${PROJECT_NAME}" && \
   npm install --save \
-    dotenv && \
+    dotenv \
     zod && \
-  npm install --save-dev && \
-    typescript && \
-    tsc-watch && \
-    jest && \
-    ts-jest && \
-    eslint && \
-    @typescript-eslint/parser && \
-    @typescript-eslint/eslint-plugin && \
-    @types/node && \
+  npm install --save-dev \
+    typescript \
+    tsc-watch \
+    jest \
+    ts-jest \
+    eslint \
+    @typescript-eslint/parser \
+    @typescript-eslint/eslint-plugin \
+    @types/node \
     @types/jest
 ```
