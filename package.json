@@ -11,8 +11,8 @@
     "fix": "eslint --ext .ts --fix src/",
     "test": "jest --detectOpenHandles --forceExit",
     "build": "tsc --build",
-    "start": "tsc-watch --noClear --onSuccess \"node .\"",
-    "serve": "exec node --enable-source-maps ."
+    "dev": "tsc-watch --noClear --onSuccess \"node --enable-source-maps .\"",
+    "start": "exec node --enable-source-maps ."
   },
   "devDependencies": {
   },
