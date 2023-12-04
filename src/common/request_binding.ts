@@ -1,5 +1,6 @@
 import express, {NextFunction, Request, Response} from 'express';
 import z, {ZodError, ZodIssue} from 'zod';
+import * as QueryString from 'querystring';
 
 type RequestWithBody<T> = Request & {
   parsedBody: T;
@@ -75,26 +76,60 @@ export function bindRequestBody(schema: z.Schema, opts?: BindBodyOptions) {
 }
 
 export function bindRequestQuery(schema: z.Schema) {
-  return (req: Request, res: Response, next: NextFunction) => {
-    schema.parseAsync(req.query)
-      .then(query => {
-        (req as RequestWithQuery<typeof query>).parsedQuery = query;
-        next();
-      })
-      .catch(e => {
-        if (e instanceof ZodError) {
-          res.status(400).json({
-            error: 'Request validation error',
-            violations: e.issues.map(issue => ({
-              queryParam: joinPath(issue.path),
-              code: mapIssueCode(issue)
-            }))
-          });
-        } else {
-          next(e);
-        }
-      });
-  };
+  return [
+    (req: Request, res: Response, next: NextFunction) => {
+      req.query = parseStringRecord(req.query) as QueryString.ParsedUrlQuery;
+      next();
+    },
+    (req: Request, res: Response, next: NextFunction) => {
+      schema.parseAsync(req.query)
+        .then(query => {
+          (req as RequestWithQuery<typeof query>).parsedQuery = query;
+          next();
+        })
+        .catch(e => {
+          if (e instanceof ZodError) {
+            res.status(400).json({
+              error: 'Request validation error',
+              violations: e.issues.map(issue => ({
+                queryParam: joinPath(issue.path),
+                code: mapIssueCode(issue)
+              }))
+            });
+          } else {
+            next(e);
+          }
+        });
+    }
+  ];
+}
+
+function parseStringRecord(target: unknown): unknown {
+  switch (typeof (target)) {
+  case 'string':
+    if (target === '') {
+      return '';
+    } else if (!isNaN(Number(target))) {
+      return Number(target);
+    } else if (target === 'true' || target === 'false') {
+      return target === 'true';
+    } else {
+      return target;
+    }
+  case 'object':
+    if (target === null) {
+      return null;
+    } else if (Array.isArray(target)) {
+      return target.map(v => parseStringRecord(v));
+    } else {
+      const obj = target as Record<string, unknown>;
+      Object.keys(obj)
+        .forEach(key => obj[key] = parseStringRecord(obj[key]));
+      return obj;
+    }
+  default:
+    return target;
+  }
 }
 
 function joinPath(parts: (string | number)[]) {

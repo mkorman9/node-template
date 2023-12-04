@@ -1,5 +1,4 @@
 import express, {NextFunction, Request, Response} from 'express';
-import {queryParser} from 'express-query-parser';
 import {registerRoutes} from './routes';
 
 const app = express();
@@ -7,12 +6,6 @@ const app = express();
 app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal']);
 app.disable('x-powered-by');
 app.disable('etag');
-app.use(
-  queryParser({
-    parseBoolean: true,
-    parseNumber: true
-  })
-);
 
 registerRoutes(app);
 
