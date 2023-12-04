@@ -6,16 +6,8 @@ type RequestWithBody<T> = Request & {
   parsedBody: T;
 };
 
-type RequestWithQuery<T> = Request & {
-  parsedQuery: T;
-};
-
 export function getRequestBody<T>(req: Request) {
   return (req as RequestWithBody<T>).parsedBody;
-}
-
-export function getRequestQuery<T>(req: Request) {
-  return (req as RequestWithQuery<T>).parsedQuery;
 }
 
 export const BodyParsingMiddlewares = {
@@ -44,7 +36,7 @@ export function bindRequestBody(schema: z.Schema, opts?: BindBodyOptions) {
         return next(err);
       }
 
-      if (err instanceof SyntaxError && 'body' in err) {
+      if ('body' in err) {
         return res.status(400).json({
           error: 'Request body parsing error'
         });
@@ -73,6 +65,14 @@ export function bindRequestBody(schema: z.Schema, opts?: BindBodyOptions) {
         });
     }
   ];
+}
+
+type RequestWithQuery<T> = Request & {
+  parsedQuery: T;
+};
+
+export function getRequestQuery<T>(req: Request) {
+  return (req as RequestWithQuery<T>).parsedQuery;
 }
 
 export function bindRequestQuery(schema: z.Schema) {
