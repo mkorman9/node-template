@@ -1,4 +1,4 @@
 import {Express} from 'express';
 
-export const registerRoutes = (app: Express) => {
+export default (app: Express) => {
 };

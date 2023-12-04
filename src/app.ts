@@ -1,5 +1,5 @@
 import express, {NextFunction, Request, Response} from 'express';
-import {registerRoutes} from './routes';
+import routes from './routes';
 
 const app = express();
 
@@ -7,7 +7,7 @@ app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal']);
 app.disable('x-powered-by');
 app.disable('etag');
 
-registerRoutes(app);
+routes(app);
 
 app.use((req: Request, res: Response) => {
   res.status(404).json({
