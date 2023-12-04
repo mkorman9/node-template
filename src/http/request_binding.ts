@@ -2,12 +2,12 @@ import express, {NextFunction, Request, Response} from 'express';
 import z, {ZodError, ZodIssue} from 'zod';
 import * as QueryString from 'querystring';
 
-type RequestWithBody<T> = Request & {
-  parsedBody: T;
+type RequestWithBody = Request & {
+  parsedBody: unknown;
 };
 
-export function getRequestBody<T>(req: Request) {
-  return (req as RequestWithBody<T>).parsedBody;
+export function getRequestBody<T extends z.Schema>(req: Request, t: T): z.infer<T> {
+  return (req as RequestWithBody).parsedBody;
 }
 
 export const BodyParsingMiddlewares = {
@@ -47,7 +47,7 @@ export function bindRequestBody(schema: z.Schema, opts?: BindBodyOptions) {
     (req: Request, res: Response, next: NextFunction) => {
       schema.parseAsync(req.body)
         .then(body => {
-          (req as RequestWithBody<typeof body>).parsedBody = body;
+          (req as RequestWithBody).parsedBody = body;
           next();
         })
         .catch(e => {
@@ -67,12 +67,12 @@ export function bindRequestBody(schema: z.Schema, opts?: BindBodyOptions) {
   ];
 }
 
-type RequestWithQuery<T> = Request & {
-  parsedQuery: T;
+type RequestWithQuery = Request & {
+  parsedQuery: unknown;
 };
 
-export function getRequestQuery<T>(req: Request) {
-  return (req as RequestWithQuery<T>).parsedQuery;
+export function getRequestQuery<T extends z.Schema>(req: Request, t: T): z.infer<T> {
+  return (req as RequestWithQuery).parsedQuery;
 }
 
 export function bindRequestQuery(schema: z.Schema) {
@@ -84,7 +84,7 @@ export function bindRequestQuery(schema: z.Schema) {
     (req: Request, res: Response, next: NextFunction) => {
       schema.parseAsync(req.query)
         .then(query => {
-          (req as RequestWithQuery<typeof query>).parsedQuery = query;
+          (req as RequestWithQuery).parsedQuery = query;
           next();
         })
         .catch(e => {
