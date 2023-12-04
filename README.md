@@ -54,7 +54,8 @@ else
     npm install --save \
       dotenv \
       zod \
-      express && \
+      express \
+      express-query-parser && \
     npm install --save-dev \
       typescript \
       tsc-watch \
