@@ -14,6 +14,7 @@ COPY --chown=node:node --from=builder /build/package-lock.json /runtime
 USER node
 WORKDIR /runtime
 ENV NODE_ENV=production
+EXPOSE 8080
 
 RUN npm ci --omit=dev
 

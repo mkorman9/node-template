@@ -6,6 +6,8 @@ const bool = () => z.string().transform(v => ['true', '1'].includes(v.toLowerCas
 const int = () => z.preprocess(Number, z.number().int());
 
 const ConfigSchema = z.object({
+  HTTP_HOST: str().default('0.0.0.0'),
+  HTTP_PORT: int().default(8080)
 });
 
 export default (() => {
