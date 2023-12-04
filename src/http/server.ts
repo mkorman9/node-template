@@ -1,31 +1,31 @@
 import app from './app';
+import {Server} from 'http';
 
-export function startServer(host: string, port: number): Promise<void> {
+export type ServerProcess = {
+  address: string;
+  stop: () => Promise<void>;
+};
+
+const ServerStopTimeout = 5000;
+
+export function startServer(host: string, port: number): Promise<ServerProcess> {
   return new Promise((resolve, reject) => {
     const server = app.listen(port, host, () => {
-      console.log(`✅ Server started on ${host}:${port}`);
+      resolve(createServerProcess(host, port, server));
     });
     
     server.on('error', err => {
-      console.log(`🚫 Failed to start the server: ${err.stack}`);
       reject(err);
     });
-  
-    process.on('SIGINT', () => {
-      if (!server.listening) {
-        resolve();
-        return;
-      }
-    
-      server.close(() => {
-        console.log('⛔ Server has stopped');
-        resolve();
-      });
-    
-      setTimeout(() => {
-        console.log('🚫 Timeout when stopping the server');
-        resolve();
-      }, 5000);
-    });
   });
+}
+
+function createServerProcess(host: string, port: number, server: Server): ServerProcess {
+  return {
+    address: `${host}:${port}`,
+    stop: () => new Promise((resolve, reject) => {
+      server.close(() => resolve());
+      setTimeout(() => reject(), ServerStopTimeout);
+    })
+  };
 }
