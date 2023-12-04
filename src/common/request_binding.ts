@@ -9,20 +9,12 @@ type RequestWithQuery<T> = Request & {
   parsedQuery: T;
 };
 
-type RequestWithParams<T> = Request & {
-  parsedParams: T;
-};
-
 export function getRequestBody<T>(req: Request) {
   return (req as RequestWithBody<T>).parsedBody;
 }
 
 export function getRequestQuery<T>(req: Request) {
   return (req as RequestWithQuery<T>).parsedQuery;
-}
-
-export function getRequestParams<T>(req: Request) {
-  return (req as RequestWithParams<T>).parsedParams;
 }
 
 export const BodyParsingMiddlewares = {
@@ -95,29 +87,6 @@ export function bindRequestQuery(schema: z.Schema) {
             error: 'Request validation error',
             violations: e.issues.map(issue => ({
               queryParam: joinPath(issue.path),
-              code: mapIssueCode(issue)
-            }))
-          });
-        } else {
-          next(e);
-        }
-      });
-  };
-}
-
-export function bindRequestParams(schema: z.Schema) {
-  return (req: Request, res: Response, next: NextFunction) => {
-    schema.parseAsync(req.params)
-      .then(params => {
-        (req as RequestWithParams<typeof params>).parsedParams = params;
-        next();
-      })
-      .catch(e => {
-        if (e instanceof ZodError) {
-          res.status(400).json({
-            error: 'Request validation error',
-            violations: e.issues.map(issue => ({
-              param: joinPath(issue.path),
               code: mapIssueCode(issue)
             }))
           });
