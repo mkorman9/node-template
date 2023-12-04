@@ -12,10 +12,18 @@ server.on('error', err => {
   process.exit(1);
 });
 
-process.on('exit', () => {
-  if (server.listening) {
-    server.close(() => {
-      console.log('⛔ Server has stopped');
-    });
+process.on('SIGINT', () => {
+  if (!server.listening) {
+    process.exit(0);
   }
+
+  server.close(() => {
+    console.log('⛔ Server has stopped');
+    process.exit(0);
+  });
+
+  setTimeout(() => {
+    console.log('🚫 Timeout when stopping the server');
+    process.exit(1);
+  }, 5000);
 });

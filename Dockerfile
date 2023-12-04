@@ -18,4 +18,4 @@ EXPOSE 8080
 
 RUN npm ci --omit=dev
 
-CMD [ "npm", "run", "--silent", "start" ]
+CMD [ "npm", "run", "--silent", "serve" ]
