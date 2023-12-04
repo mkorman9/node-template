@@ -13,15 +13,6 @@ type RequestWithParams<T> = Request & {
   parsedParams: T;
 };
 
-export type BodyParsingMiddleware = 'json' | 'form';
-
-export type BindBodyOptions = {
-  middlewares: BodyParsingMiddleware[] | undefined
-};
-
-const jsonMiddleware = express.json();
-const formMiddleware = express.urlencoded({extended: true});
-
 export function getRequestBody<T>(req: Request) {
   return (req as RequestWithBody<T>).parsedBody;
 }
@@ -34,19 +25,24 @@ export function getRequestParams<T>(req: Request) {
   return (req as RequestWithParams<T>).parsedParams;
 }
 
+export const BodyParsingMiddlewares = {
+  json: express.json(),
+  form: express.urlencoded({extended: true})
+};
+
+export type BodyParsingMiddleware = keyof typeof BodyParsingMiddlewares;
+
+export type BindBodyOptions = {
+  middlewares: BodyParsingMiddleware[] | undefined
+};
+
 export function bindRequestBody(schema: z.Schema, opts?: BindBodyOptions) {
-  let middlewareTypes = ['json'];
+  let middlewareTypes: BodyParsingMiddleware[] = ['json'];
   if (opts && opts.middlewares) {
     middlewareTypes = opts.middlewares;
   }
 
-  const middlewares = middlewareTypes.map(m => {
-    if (m === 'json') {
-      return jsonMiddleware;
-    } else if (m === 'form') {
-      return formMiddleware;
-    }
-  });
+  const middlewares = middlewareTypes.map(m => BodyParsingMiddlewares[m]);
 
   return [
     ...middlewares,
