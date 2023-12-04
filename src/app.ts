@@ -9,8 +9,6 @@ app.disable('x-powered-by');
 app.disable('etag');
 app.use(
   queryParser({
-    parseNull: true,
-    parseUndefined: true,
     parseBoolean: true,
     parseNumber: true
   })
