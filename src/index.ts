@@ -2,9 +2,9 @@ import config from './config';
 import './hooks';
 
 import {startServer} from './http/server';
-import routes from './routes';
+import app from './app';
 
-startServer(routes, config.HTTP_HOST, config.HTTP_PORT)
+startServer(app, config.HTTP_HOST, config.HTTP_PORT)
   .then(server => {
     console.log(`✅ Server started on ${server.address}`);
 

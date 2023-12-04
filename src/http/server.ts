@@ -1,4 +1,4 @@
-import {createApp, RoutesFunc} from './app';
+import {Express} from 'express';
 import {Server} from 'http';
 
 export type ServerProcess = {
@@ -8,9 +8,7 @@ export type ServerProcess = {
 
 const ServerStopTimeout = 5000;
 
-export function startServer(routesFunc: RoutesFunc, host: string, port: number): Promise<ServerProcess> {
-  const app = createApp(routesFunc);
-
+export function startServer(app: Express, host: string, port: number): Promise<ServerProcess> {
   return new Promise((resolve, reject) => {
     const server = app.listen(port, host, () => {
       resolve(createServerProcess(host, port, server));

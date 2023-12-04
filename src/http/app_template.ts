@@ -1,15 +1,13 @@
 import express, {Express, NextFunction, Request, Response} from 'express';
 
-export type RoutesFunc = (app: Express) => void;
-
-export function createApp(routesFunc: RoutesFunc): Express {
-  const app = express()
+export function createApp(): Express {
+  return express()
     .set('trust proxy', ['loopback', 'linklocal', 'uniquelocal'])
     .disable('x-powered-by')
     .disable('etag');
+}
 
-  routesFunc(app);
-
+export function appendErrorHandlers(app: Express): Express {
   app.use((req: Request, res: Response) => {
     res.status(404).json({
       error: 'Not found'
