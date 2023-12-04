@@ -1,5 +1,5 @@
-import express, { NextFunction, Request, Response } from 'express';
-import z, { ZodError, ZodIssue } from 'zod';
+import express, {NextFunction, Request, Response} from 'express';
+import z, {ZodError, ZodIssue} from 'zod';
 
 type RequestWithBody<T> = Request & {
   parsedBody: T;
