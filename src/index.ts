@@ -1,7 +1,7 @@
 import config from './config';
 import './hooks';
 
-import { startServer } from './http/server';
+import {startServer} from './http/server';
 
 startServer(config.HTTP_HOST, config.HTTP_PORT)
   .then(() => process.exit(0))
