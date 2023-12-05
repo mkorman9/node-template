@@ -1,5 +1,6 @@
 import {Express} from 'express';
 import {Server} from 'http';
+import {AddressInfo} from 'net';
 
 export type ServerProcess = {
   address: string;
@@ -11,7 +12,7 @@ const ServerStopTimeout = 5000;
 export function startServer(app: Express, host: string, port: number): Promise<ServerProcess> {
   return new Promise((resolve, reject) => {
     const server = app.listen(port, host, () => {
-      resolve(createServerProcess(host, port, server));
+      resolve(createServerProcess(server));
     });
     
     server.on('error', err => {
@@ -20,9 +21,10 @@ export function startServer(app: Express, host: string, port: number): Promise<S
   });
 }
 
-function createServerProcess(host: string, port: number, server: Server): ServerProcess {
+function createServerProcess(server: Server): ServerProcess {
+  const addr = server.address() as AddressInfo;
   return {
-    address: `${host}:${port}`,
+    address: `${addr.address}:${addr.port}`,
     stop: () => new Promise((resolve, reject) => {
       server.close(() => resolve());
       setTimeout(() => reject(), ServerStopTimeout);
