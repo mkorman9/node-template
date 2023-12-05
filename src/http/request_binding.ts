@@ -38,7 +38,9 @@ export function bindRequestBody(schema: z.Schema, opts?: BindBodyOptions) {
 
       if ('body' in err) {
         return res.status(400).json({
-          error: 'Request body parsing error'
+          title: 'Provided request body cannot be parsed',
+          type: 'MalformedRequestBody',
+          cause: process.env.NODE_ENV === 'production' ? undefined : err.stack
         });
       }
 
@@ -53,8 +55,9 @@ export function bindRequestBody(schema: z.Schema, opts?: BindBodyOptions) {
         .catch(e => {
           if (e instanceof ZodError) {
             res.status(400).json({
-              error: 'Request validation error',
-              violations: e.issues.map(issue => ({
+              title: 'Provided request body contains schema violations',
+              type: 'ValidationError',
+              cause: e.issues.map(issue => ({
                 field: joinPath(issue.path),
                 code: mapIssueCode(issue)
               }))
@@ -90,9 +93,10 @@ export function bindRequestQuery(schema: z.Schema) {
         .catch(e => {
           if (e instanceof ZodError) {
             res.status(400).json({
-              error: 'Request validation error',
-              violations: e.issues.map(issue => ({
-                queryParam: joinPath(issue.path),
+              title: 'Provided request query parameters contain schema violations',
+              type: 'ValidationError',
+              cause: e.issues.map(issue => ({
+                param: joinPath(issue.path),
                 code: mapIssueCode(issue)
               }))
             });

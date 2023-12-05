@@ -10,7 +10,8 @@ export function createApp(): Express {
 export function appendErrorHandlers(app: Express): Express {
   app.use((req: Request, res: Response) => {
     res.status(404).json({
-      error: 'Not found'
+      title: 'The request resource was not found',
+      type: 'NotFound'
     });
   });
 
@@ -19,10 +20,12 @@ export function appendErrorHandlers(app: Express): Express {
       return next(err);
     }
 
-    console.log(`Error when handling request ${req.method} ${req.path}: ${err.stack}`);
+    console.log(`🚫 Unhandled error while processing the request (${req.method} ${req.path}): ${err.stack}`);
 
     res.status(500).json({
-      error: 'Internal server error'
+      title: 'Server has encountered an error when processing the request',
+      type: 'InternalServerError',
+      cause: process.env.NODE_ENV === 'production' ? undefined : err.stack
     });
   });
 
