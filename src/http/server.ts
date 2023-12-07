@@ -27,7 +27,7 @@ function createServerProcess(server: Server): ServerProcess {
     address: `${addr.address}:${addr.port}`,
     stop: () => new Promise((resolve, reject) => {
       server.close(() => resolve());
-      setTimeout(() => reject(), ServerStopTimeout);
+      setTimeout(() => reject(new Error('Timeout')), ServerStopTimeout);
     })
   };
 }
