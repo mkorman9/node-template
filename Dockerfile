@@ -1,11 +1,11 @@
-FROM node:18 AS builder
+FROM node:20 AS builder
 
 WORKDIR /build
 
 COPY . .
 RUN npm ci && npm run build
 
-FROM node:18-slim
+FROM node:20-slim
 
 COPY --chown=node:node --from=builder /build/dist/ /runtime/dist/
 COPY --chown=node:node --from=builder /build/package.json /runtime
