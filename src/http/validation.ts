@@ -4,21 +4,28 @@ import {ServerResponse} from 'http';
 
 export class RequestValidationError extends Error {
   constructor(
+    public statusCode: number,
     public response: unknown
   ) {
     super();
   }
 }
 
-export const BodyParsers = {
-  json: express.json(),
-  form: express.urlencoded({extended: true})
+export const BodyParserTypes = {
+  json: {
+    contentType: 'application/json',
+    parser: express.json()
+  },
+  form: {
+    contentType: 'application/x-www-form-urlencoded',
+    parser: express.urlencoded({extended: true})
+  }
 };
 
-export type BodyParser = keyof typeof BodyParsers;
+export type BodyParserType = keyof typeof BodyParserTypes;
 
 export type ValidateRequestBodyOptions = {
-  parsers: BodyParser[] | undefined
+  parsers: BodyParserType[] | undefined
 };
 
 export async function validateRequestBody<TSchema extends z.Schema>(
@@ -27,12 +34,20 @@ export async function validateRequestBody<TSchema extends z.Schema>(
   opts: ValidateRequestBodyOptions | undefined = undefined
 ): Promise<z.infer<TSchema>> {
   const parsers = (opts?.parsers || ['json'])
-    .map(parser => BodyParsers[parser]);
+    .map(types => BodyParserTypes[types])
+    .filter(types => (req.header('Content-Type') || '').startsWith(types.contentType))
+    .map(type => type.parser);
 
-  let parsingError = undefined;
-  for (const parser of parsers) {
-    const promise = new Promise<unknown>((resolve, reject) =>
-      parser(req, {} as ServerResponse, (err: Error | undefined) => {
+  if (!parsers.length) {
+    throw new RequestValidationError(415, {
+      title: 'Provided request body format was not recognised',
+      type: 'UnsupportedMediaType'
+    });
+  }
+
+  try {
+    req.body = await new Promise<unknown>((resolve, reject) =>
+      parsers[0](req, {} as ServerResponse, (err: Error | undefined) => {
         if (err) {
           return reject(err);
         }
@@ -40,23 +55,13 @@ export async function validateRequestBody<TSchema extends z.Schema>(
         resolve(req.body);
       })
     );
-
-    try {
-      req.body = await promise;
-      parsingError = undefined;
-      break;
-    } catch (e) {
-      parsingError = e;
-    }
-  }
-
-  if (parsingError) {
-    throw new RequestValidationError({
+  } catch (e) {
+    throw new RequestValidationError(400, {
       title: 'Provided request body cannot be parsed',
       type: 'MalformedRequestBody',
       cause: process.env.NODE_ENV === 'production'
         ? undefined
-        : (parsingError instanceof Error ? parsingError.stack : parsingError)
+        : (e instanceof Error ? e.stack : e)
     });
   }
 
@@ -64,7 +69,7 @@ export async function validateRequestBody<TSchema extends z.Schema>(
     return await schema.parseAsync(req.body);
   } catch (e) {
     if (e instanceof ZodError) {
-      throw new RequestValidationError({
+      throw new RequestValidationError(400, {
         title: 'Provided request body contains schema violations',
         type: 'ValidationError',
         cause: e.issues.map(issue => ({
@@ -87,7 +92,7 @@ export async function validateRequestQuery<TSchema extends z.Schema>(
     return await schema.parseAsync(query);
   } catch (e) {
     if (e instanceof ZodError) {
-      throw new RequestValidationError({
+      throw new RequestValidationError(400, {
         title: 'Provided request query parameters contain schema violations',
         type: 'ValidationError',
         cause: e.issues.map(issue => ({

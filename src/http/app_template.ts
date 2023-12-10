@@ -24,7 +24,7 @@ export function appendErrorHandlers(app: Express): Express {
     }
 
     if (err instanceof RequestValidationError) {
-      return res.status(400).json(err.response);
+      return res.status(err.statusCode).json(err.response);
     }
 
     console.log(`🚫 Unhandled error while processing the request (${req.method} ${req.path}): ${err.stack}`);
