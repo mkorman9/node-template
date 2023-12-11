@@ -40,13 +40,14 @@ export async function validateRequestBody<TSchema extends z.Schema>(
   req: Request,
   schema: TSchema,
   opts?: ValidateRequestBodyOptions
-): Promise<z.infer<TSchema>> {
-  const parsers = (opts?.parsers || ['json'])
+): Promise<z.TypeOf<TSchema>> {
+  const parser = (opts?.parsers || ['json'])
     .map(types => BodyParserTypes[types])
     .filter(types => (req.header('Content-Type') || '').startsWith(types.contentType))
-    .map(type => type.parser);
+    .map(type => type.parser)
+    .shift();
 
-  if (!parsers.length) {
+  if (!parser) {
     throw new RequestValidationError(415, {
       title: 'Provided request body format was not recognised',
       type: 'UnsupportedMediaType'
@@ -55,7 +56,7 @@ export async function validateRequestBody<TSchema extends z.Schema>(
 
   try {
     req.body = await new Promise<unknown>((resolve, reject) =>
-      parsers[0](req, {} as ServerResponse, (err?: Error) => {
+      parser(req, {} as ServerResponse, (err?: Error) => {
         if (err) {
           return reject(err);
         }
@@ -113,7 +114,7 @@ export function getRequestBodyRaw(req: Request): Promise<Buffer> {
 export async function validateRequestQuery<TSchema extends z.Schema>(
   req: Request,
   schema: TSchema
-): Promise<z.infer<TSchema>> {
+): Promise<z.TypeOf<TSchema>> {
   const query = parseQueryParams(req.query);
   try {
     return await schema.parseAsync(query);
