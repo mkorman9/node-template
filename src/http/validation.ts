@@ -103,7 +103,8 @@ export function getRequestBodyRaw(req: Request): Promise<Buffer> {
   return validateRequestBody(
     req,
     z.preprocess(
-      v => (v && typeof v === 'object' && !Object.keys(v).length) ? Buffer.from('') : v, z.instanceof(Buffer)
+      v => (v && typeof v === 'object' && !Object.keys(v).length) ? Buffer.from('') : v,
+      z.instanceof(Buffer)
     ),
     {parsers: ['raw']}
   );
