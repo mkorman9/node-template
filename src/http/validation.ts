@@ -19,6 +19,14 @@ export const BodyParserTypes = {
   form: {
     contentType: 'application/x-www-form-urlencoded',
     parser: express.urlencoded({extended: true})
+  },
+  text: {
+    contentType: '',
+    parser: express.text({type: '*/*'})
+  },
+  raw: {
+    contentType: '',
+    parser: express.raw({type: '*/*'})
   }
 };
 
@@ -73,7 +81,7 @@ export async function validateRequestBody<TSchema extends z.Schema>(
         title: 'Provided request body contains schema violations',
         type: 'ValidationError',
         cause: e.issues.map(issue => ({
-          field: joinPath(issue.path),
+          field: joinPath(issue.path) || '.',
           code: mapIssueCode(issue)
         }))
       });
@@ -81,6 +89,24 @@ export async function validateRequestBody<TSchema extends z.Schema>(
 
     throw e;
   }
+}
+
+export function getRequestBodyText(req: Request): Promise<string> {
+  return validateRequestBody(
+    req,
+    z.preprocess(v => (v && typeof v === 'object' && !Object.keys(v).length) ? '' : v, z.string()),
+    {parsers: ['text']}
+  );
+}
+
+export function getRequestBodyRaw(req: Request): Promise<Buffer> {
+  return validateRequestBody(
+    req,
+    z.preprocess(
+      v => (v && typeof v === 'object' && !Object.keys(v).length) ? Buffer.from('') : v, z.instanceof(Buffer)
+    ),
+    {parsers: ['raw']}
+  );
 }
 
 export async function validateRequestQuery<TSchema extends z.Schema>(
