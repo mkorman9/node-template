@@ -33,13 +33,13 @@ export const BodyParserTypes = {
 export type BodyParserType = keyof typeof BodyParserTypes;
 
 export type ValidateRequestBodyOptions = {
-  parsers: BodyParserType[] | undefined
+  parsers?: BodyParserType[]
 };
 
 export async function validateRequestBody<TSchema extends z.Schema>(
   req: Request,
   schema: TSchema,
-  opts: ValidateRequestBodyOptions | undefined = undefined
+  opts?: ValidateRequestBodyOptions
 ): Promise<z.infer<TSchema>> {
   const parsers = (opts?.parsers || ['json'])
     .map(types => BodyParserTypes[types])
@@ -55,7 +55,7 @@ export async function validateRequestBody<TSchema extends z.Schema>(
 
   try {
     req.body = await new Promise<unknown>((resolve, reject) =>
-      parsers[0](req, {} as ServerResponse, (err: Error | undefined) => {
+      parsers[0](req, {} as ServerResponse, (err?: Error) => {
         if (err) {
           return reject(err);
         }
