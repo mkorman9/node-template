@@ -1,7 +1,18 @@
 import express, {Express, NextFunction, Request, Response} from 'express';
 import 'express-async-errors';
 
-import {RequestValidationError} from './validation';
+export class HttpResponseError extends Error {
+  constructor(
+    public statusCode: number,
+    public response: {
+      type: string;
+      title?: string;
+      cause?: unknown;
+    }
+  ) {
+    super();
+  }
+}
 
 export function createApp(): Express {
   return express()
@@ -23,7 +34,7 @@ export function appendErrorHandlers(app: Express): Express {
       return next(err);
     }
 
-    if (err instanceof RequestValidationError) {
+    if (err instanceof HttpResponseError) {
       return res.status(err.statusCode).json(err.response);
     }
 

@@ -1,15 +1,7 @@
 import express, {Request} from 'express';
 import z, {ZodError, ZodIssue} from 'zod';
 import {ServerResponse} from 'http';
-
-export class RequestValidationError extends Error {
-  constructor(
-    public statusCode: number,
-    public response: unknown
-  ) {
-    super();
-  }
-}
+import {HttpResponseError} from './app_template';
 
 export const BodyParserTypes = {
   json: {
@@ -48,7 +40,7 @@ export async function validateRequestBody<TSchema extends z.Schema>(
     .shift();
 
   if (!parser) {
-    throw new RequestValidationError(415, {
+    throw new HttpResponseError(415, {
       title: 'Provided request body format was not recognised',
       type: 'UnsupportedMediaType'
     });
@@ -65,7 +57,7 @@ export async function validateRequestBody<TSchema extends z.Schema>(
       })
     );
   } catch (e) {
-    throw new RequestValidationError(400, {
+    throw new HttpResponseError(400, {
       title: 'Provided request body cannot be parsed',
       type: 'MalformedRequestBody',
       cause: process.env.NODE_ENV === 'production'
@@ -78,7 +70,7 @@ export async function validateRequestBody<TSchema extends z.Schema>(
     return await schema.parseAsync(req.body);
   } catch (e) {
     if (e instanceof ZodError) {
-      throw new RequestValidationError(400, {
+      throw new HttpResponseError(400, {
         title: 'Provided request body contains schema violations',
         type: 'ValidationError',
         cause: e.issues.map(issue => ({
@@ -120,7 +112,7 @@ export async function validateRequestQuery<TSchema extends z.Schema>(
     return await schema.parseAsync(query);
   } catch (e) {
     if (e instanceof ZodError) {
-      throw new RequestValidationError(400, {
+      throw new HttpResponseError(400, {
         title: 'Provided request query parameters contain schema violations',
         type: 'ValidationError',
         cause: e.issues.map(issue => ({
