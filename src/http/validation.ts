@@ -1,5 +1,5 @@
 import express, {Request} from 'express';
-import z, {ZodError, ZodIssue} from 'zod';
+import z, {ZodError} from 'zod';
 import {ServerResponse} from 'http';
 import {HttpResponseError} from './app_template';
 
@@ -74,8 +74,9 @@ export async function validateRequestBody<TSchema extends z.Schema>(
         title: 'Provided request body contains schema violations',
         type: 'ValidationError',
         cause: e.issues.map(issue => ({
-          field: joinPath(issue.path) || '.',
-          code: mapIssueCode(issue)
+          location: issue.path,
+          code: issue.message.toLowerCase() === 'required' ? 'required' : issue.code,
+          message: issue.message
         }))
       });
     }
@@ -116,8 +117,9 @@ export async function validateRequestQuery<TSchema extends z.Schema>(
         title: 'Provided request query parameters contain schema violations',
         type: 'ValidationError',
         cause: e.issues.map(issue => ({
-          param: joinPath(issue.path),
-          code: mapIssueCode(issue)
+          location: issue.path,
+          code: issue.message.toLowerCase() === 'required' ? 'required' : issue.code,
+          message: issue.message
         }))
       });
     }
@@ -152,32 +154,4 @@ function parseQueryParams(target: unknown): unknown {
   default:
     return target;
   }
-}
-
-function joinPath(parts: (string | number)[]) {
-  return parts.reduce((acc: string, current: string | number) => {
-    if (typeof current === 'number') {
-      return `${acc}[${current}]`;
-    } else {
-      if (acc.length === 0) {
-        return current;
-      } else {
-        return `${acc}.${current}`;
-      }
-    }
-  }, '');
-}
-
-function mapIssueCode(issue: ZodIssue) {
-  if (issue.code === 'invalid_type') {
-    if (issue.received === 'undefined' && issue.expected !== 'undefined') {
-      return 'required';
-    }
-  } else if (issue.code === 'invalid_string') {
-    if (typeof issue.validation === 'string') {
-      return issue.validation;
-    }
-  }
-
-  return issue.code;
 }
