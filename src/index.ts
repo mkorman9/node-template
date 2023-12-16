@@ -1,5 +1,4 @@
 import config from './config';
-import './hooks';
 
 import {startServer} from './http/server';
 import app from './app';
