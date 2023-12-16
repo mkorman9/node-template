@@ -108,9 +108,8 @@ export async function validateRequestQuery<TSchema extends z.Schema>(
   req: Request,
   schema: TSchema
 ): Promise<z.TypeOf<TSchema>> {
-  const query = parseQueryParams(req.query);
   try {
-    return await schema.parseAsync(query);
+    return await schema.parseAsync(req.query);
   } catch (e) {
     if (e instanceof ZodError) {
       throw new HttpResponseError(400, {
@@ -125,33 +124,5 @@ export async function validateRequestQuery<TSchema extends z.Schema>(
     }
 
     throw e;
-  }
-}
-
-function parseQueryParams(target: unknown): unknown {
-  switch (typeof (target)) {
-  case 'string':
-    if (target === '') {
-      return '';
-    } else if (!isNaN(Number(target))) {
-      return Number(target);
-    } else if (target === 'true' || target === 'false') {
-      return target === 'true';
-    } else {
-      return target;
-    }
-  case 'object':
-    if (target === null) {
-      return null;
-    } else if (Array.isArray(target)) {
-      return target.map(v => parseQueryParams(v));
-    } else {
-      const obj = target as Record<string, unknown>;
-      Object.keys(obj)
-        .forEach(key => obj[key] = parseQueryParams(obj[key]));
-      return obj;
-    }
-  default:
-    return target;
   }
 }
