@@ -13,7 +13,7 @@
     "indent": ["error", 2],
     "arrow-parens": ["error", "as-needed"],
     "quotes": [
-      "warn",
+      "error",
       "single",
       {
         "avoidEscape": true,
