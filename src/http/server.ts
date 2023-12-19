@@ -1,18 +1,24 @@
 import {Express} from 'express';
 import {Server} from 'http';
-import {AddressInfo} from 'net';
-
-export type ServerProcess = {
-  address: string;
-  stop: () => Promise<void>;
-};
 
 const ServerStopTimeout = 5000;
 
-export function startServer(app: Express, host: string, port: number): Promise<ServerProcess> {
+export function startServer(app: Express, host: string, port: number) {
+  serverListen(app, host, port)
+    .then(server => {
+      console.log(`✅ Server started on ${host}:${port}`);
+      process.on('SIGINT', () => stopServer(server));
+    })
+    .catch(err => {
+      console.log(`🚫 Failed to start the server: ${err.stack}`);
+      process.exit(1);
+    });
+}
+
+function serverListen(app: Express, host: string, port: number): Promise<Server> {
   return new Promise((resolve, reject) => {
     const server = app.listen(port, host, () => {
-      resolve(createServerProcess(server));
+      resolve(server);
     });
     
     server.on('error', err => {
@@ -21,13 +27,13 @@ export function startServer(app: Express, host: string, port: number): Promise<S
   });
 }
 
-function createServerProcess(server: Server): ServerProcess {
-  const addr = server.address() as AddressInfo;
-  return {
-    address: `${addr.address}:${addr.port}`,
-    stop: () => new Promise((resolve, reject) => {
-      server.close(() => resolve());
-      setTimeout(() => reject(new Error('Timeout')), ServerStopTimeout);
-    })
-  };
+function stopServer(server: Server) {
+  server.close(() => {
+    console.log('⛔ Server has stopped');
+    process.exit(0);
+  });
+
+  setTimeout(() => {
+    console.log('🚫 Timeout while stopping the server');
+  }, ServerStopTimeout);
 }
