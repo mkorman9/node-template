@@ -27,7 +27,7 @@ async function stopServer(server: ServerProcess) {
 startServer(app, config.HTTP_HOST, config.HTTP_PORT)
   .then(server => {
     console.log(`✅ Server started on ${server.address}`);
-    process.on('SIGINT', stopServer);
+    process.on('SIGINT', async () => stopServer(server));
   })
   .catch(err => {
     console.log(`🚫 Failed to start the server: ${err.stack}`);
