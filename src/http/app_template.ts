@@ -1,7 +1,7 @@
 import express, {Application, NextFunction, Request, Response} from 'express';
 import 'express-async-errors';
 
-export class HttpResponseError extends Error {
+export class HTTPResponseError extends Error {
   constructor(
     public statusCode: number,
     public response: {
@@ -34,7 +34,7 @@ export function appendErrorHandlers(app: Application): Application {
       return next(err);
     }
 
-    if (err instanceof HttpResponseError) {
+    if (err instanceof HTTPResponseError) {
       return res.status(err.statusCode).json(err.response);
     }
 
