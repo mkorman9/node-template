@@ -1,9 +1,9 @@
-import {Express} from 'express';
+import {Application} from 'express';
 import {Server} from 'http';
 
 const ServerStopTimeout = 5000;
 
-export function startServer(app: Express, host: string, port: number) {
+export function startServer(app: Application, host: string, port: number) {
   serverListen(app, host, port)
     .then(server => {
       console.log(`✅ Server started on ${host}:${port}`);
@@ -15,7 +15,7 @@ export function startServer(app: Express, host: string, port: number) {
     });
 }
 
-function serverListen(app: Express, host: string, port: number): Promise<Server> {
+function serverListen(app: Application, host: string, port: number): Promise<Server> {
   return new Promise((resolve, reject) => {
     const server = app.listen(port, host, () => {
       resolve(server);
