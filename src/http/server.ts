@@ -1,7 +1,7 @@
 import {Application} from 'express';
 import {Server} from 'http';
 
-const ServerStopTimeout = 5000;
+const serverStopTimeout = 5000;
 
 export function startServer(app: Application, host: string, port: number) {
   serverListen(app, host, port)
@@ -35,5 +35,5 @@ function stopServer(server: Server) {
 
   setTimeout(() => {
     console.log('🚫 Timeout while stopping the server');
-  }, ServerStopTimeout);
+  }, serverStopTimeout);
 }
