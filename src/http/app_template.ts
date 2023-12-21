@@ -1,4 +1,4 @@
-import express, {Express, NextFunction, Request, Response} from 'express';
+import express, {Application, NextFunction, Request, Response} from 'express';
 import 'express-async-errors';
 
 export class HttpResponseError extends Error {
@@ -14,14 +14,14 @@ export class HttpResponseError extends Error {
   }
 }
 
-export function createApp(): Express {
+export function createApp(): Application {
   return express()
     .set('trust proxy', ['loopback', 'linklocal', 'uniquelocal'])
     .disable('x-powered-by')
     .disable('etag');
 }
 
-export function appendErrorHandlers(app: Express): Express {
+export function appendErrorHandlers(app: Application): Application {
   app.use((req: Request, res: Response) => {
     res.status(404).json({
       title: 'The request resource was not found',
