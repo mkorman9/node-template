@@ -2,8 +2,8 @@ import {createApp, appendErrorHandlers} from './http/app_template';
 import config from './config';
 
 const app = createApp({
-  trustProxies: true,
-  corsOrigin: config.HTTP_CORS_ORIGIN
+  corsOrigin: config.HTTP_CORS_ORIGIN,
+  trustProxies: config.HTTP_TRUST_PROXIES
 });
 
 
