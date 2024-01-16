@@ -1,5 +1,6 @@
 import express, {Application, NextFunction, Request, Response} from 'express';
 import 'express-async-errors';
+import cors from 'cors';
 
 export class HTTPResponseError extends Error {
   constructor(
@@ -14,11 +15,17 @@ export class HTTPResponseError extends Error {
   }
 }
 
-export function createApp(): Application {
+export type AppOptions = {
+  corsOrigin?: string;
+  trustProxies?: boolean;
+};
+
+export function createApp(opts?: AppOptions): Application {
   return express()
-    .set('trust proxy', ['loopback', 'linklocal', 'uniquelocal'])
+    .set('trust proxy', opts?.trustProxies ? ['loopback', 'linklocal', 'uniquelocal'] : [])
     .disable('x-powered-by')
-    .disable('etag');
+    .disable('etag')
+    .use(cors({origin: opts?.corsOrigin}));
 }
 
 export function appendErrorHandlers(app: Application): Application {
