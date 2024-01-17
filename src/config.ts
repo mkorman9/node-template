@@ -8,11 +8,4 @@ const envs = {
   HTTP_TRUST_PROXIES: bool({default: true})
 };
 
-export default (() => {
-  try {
-    return cleanEnv(process.env, envs);
-  } catch (e) {
-    console.log(`🚫 Configuration loading has failed: ${e}`);
-    process.exit(1);
-  }
-})();
+export default cleanEnv(process.env, envs);
