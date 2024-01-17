@@ -33,6 +33,7 @@ if [[ "${WEB}" == "0" ]]; then
     cp "${PROJECT_NAME}/.env.template" "${PROJECT_NAME}/.env" && \
     cd "${PROJECT_NAME}" && \
     npm install --save \
+      dotenv \
       envalid && \
     npm install --save-dev \
       typescript \
@@ -51,6 +52,7 @@ else
     cp "${PROJECT_NAME}/.env.template" "${PROJECT_NAME}/.env" && \
     cd "${PROJECT_NAME}" && \
     npm install --save \
+      dotenv \
       envalid \
       zod \
       express \

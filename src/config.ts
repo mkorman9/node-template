@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import {cleanEnv} from 'envalid';
 
 const envs = {
