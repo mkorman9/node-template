@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import {bool, cleanEnv, port, str} from 'envalid';
 
 const envs = {
