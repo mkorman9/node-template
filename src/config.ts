@@ -1,18 +1,15 @@
-import 'dotenv/config';
-import {z} from 'zod';
+import {bool, cleanEnv, port, str} from 'envalid';
 
-const ConfigSchema = z.object({
-  HTTP_HOST: z.string().default('0.0.0.0'),
-  HTTP_PORT: z.coerce.number().int().default(8080),
-  HTTP_CORS_ORIGIN: z.string().optional(),
-  HTTP_TRUST_PROXIES: z.enum(['true', 'false'])
-    .transform(v => v === 'true')
-    .default('true')
-});
+const envs = {
+  HTTP_HOST: str({default: '0.0.0.0'}),
+  HTTP_PORT: port({default: 8080}),
+  HTTP_CORS_ORIGIN: str({default: undefined}),
+  HTTP_TRUST_PROXIES: bool({default: true})
+};
 
 export default (() => {
   try {
-    return ConfigSchema.parse(process.env);
+    return cleanEnv(process.env, envs);
   } catch (e) {
     console.log(`🚫 Configuration loading has failed: ${e}`);
     process.exit(1);
