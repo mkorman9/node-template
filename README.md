@@ -33,8 +33,7 @@ if [[ "${WEB}" == "0" ]]; then
     cp "${PROJECT_NAME}/.env.template" "${PROJECT_NAME}/.env" && \
     cd "${PROJECT_NAME}" && \
     npm install --save \
-      dotenv \
-      zod && \
+      envalid && \
     npm install --save-dev \
       typescript \
       tsc-watch \
@@ -52,7 +51,7 @@ else
     cp "${PROJECT_NAME}/.env.template" "${PROJECT_NAME}/.env" && \
     cd "${PROJECT_NAME}" && \
     npm install --save \
-      dotenv \
+      envalid \
       zod \
       express \
       express-async-errors \

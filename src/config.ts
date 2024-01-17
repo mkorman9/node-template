@@ -1,12 +1,11 @@
-import 'dotenv/config';
-import {z} from 'zod';
+import {cleanEnv} from 'envalid';
 
-const ConfigSchema = z.object({
-});
+const envs = {
+};
 
 export default (() => {
   try {
-    return ConfigSchema.parse(process.env);
+    return cleanEnv(process.env, envs);
   } catch (e) {
     console.log(`🚫 Configuration loading has failed: ${e}`);
     process.exit(1);
