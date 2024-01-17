@@ -38,13 +38,10 @@ if [[ "${WEB}" == "0" ]]; then
     npm install --save-dev \
       typescript \
       tsc-watch \
-      jest \
-      ts-jest \
       eslint \
       @typescript-eslint/parser \
       @typescript-eslint/eslint-plugin \
-      @types/node \
-      @types/jest
+      @types/node
 else
   git clone --branch web git@github.com:mkorman9/node-template.git "${PROJECT_NAME}" && \
     rm -rf "${PROJECT_NAME}/.git" "${PROJECT_NAME}/README.md" && \
@@ -61,16 +58,11 @@ else
     npm install --save-dev \
       typescript \
       tsc-watch \
-      jest \
-      ts-jest \
       eslint \
       @typescript-eslint/parser \
       @typescript-eslint/eslint-plugin \
       @types/node \
-      @types/jest \
       @types/express \
-      @types/cors \
-      chai \
-      chai-http
+      @types/cors
 fi
 ```
