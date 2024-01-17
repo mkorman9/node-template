@@ -35,5 +35,6 @@ function stopServer(server: Server) {
 
   setTimeout(() => {
     console.log('🚫 Timeout while stopping the server');
+    process.exit(1);
   }, serverStopTimeout);
 }
