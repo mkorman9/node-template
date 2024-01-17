@@ -54,7 +54,9 @@ else
     npm install --save \
       dotenv \
       zod \
-      express && \
+      express \
+      express-async-errors \
+      cors && \
     npm install --save-dev \
       typescript \
       tsc-watch \
@@ -66,6 +68,7 @@ else
       @types/node \
       @types/jest \
       @types/express \
+      @types/cors \
       chai \
       chai-http
 fi
