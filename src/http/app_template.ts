@@ -16,11 +16,11 @@ export class HTTPResponseError extends Error {
 }
 
 export type AppOptions = {
-  corsOrigin?: string;
-  trustProxies?: boolean;
+  corsOrigin: string;
+  trustProxies: boolean;
 };
 
-export function createApp(opts?: AppOptions): Application {
+export function createApp(opts?: Partial<AppOptions>): Application {
   return express()
     .set('trust proxy', opts?.trustProxies ? ['loopback', 'linklocal', 'uniquelocal'] : [])
     .disable('x-powered-by')
