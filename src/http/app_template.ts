@@ -1,19 +1,7 @@
 import express, {Application, NextFunction, Request, Response} from 'express';
-import 'express-async-errors';
 import cors from 'cors';
-
-export class HTTPResponseError extends Error {
-  constructor(
-    public statusCode: number,
-    public response: {
-      type: string;
-      title?: string;
-      cause?: unknown;
-    }
-  ) {
-    super();
-  }
-}
+import 'express-async-errors';
+import {HTTPResponseError} from './http_error';
 
 export type AppOptions = {
   corsOrigin: string;

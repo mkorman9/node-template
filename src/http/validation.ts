@@ -1,7 +1,7 @@
 import express, {Request} from 'express';
 import z, {ZodError} from 'zod';
 import {ServerResponse} from 'http';
-import {HTTPResponseError} from './app_template';
+import {HTTPResponseError} from './http_error';
 
 const jsonParser = express.json();
 
