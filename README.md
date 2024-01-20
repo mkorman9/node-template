@@ -5,13 +5,13 @@
 ```sh
 #!/usr/bin/env bash
 
-WEB="0"
+SOURCE_BRANCH="master"
 PROJECT_NAME="$1"
 
 while [[ $# -gt 0 ]]; do
   case $1 in
     --web)
-      WEB="1"
+      SOURCE_BRANCH="web"
       shift
       ;;
     *)
@@ -26,43 +26,30 @@ if [[ -z "$PROJECT_NAME" ]]; then
   exit 1
 fi
 
-if [[ "${WEB}" == "0" ]]; then
-  git clone git@github.com:mkorman9/node-template.git "${PROJECT_NAME}" && \
-    rm -rf "${PROJECT_NAME}/.git" "${PROJECT_NAME}/README.md" && \
-    sed -i "s/node-template-project/${PROJECT_NAME}/g" "${PROJECT_NAME}/package.json" && \
-    cp "${PROJECT_NAME}/.env.template" "${PROJECT_NAME}/.env" && \
-    cd "${PROJECT_NAME}" && \
-    npm install --save \
-      dotenv \
-      envalid && \
-    npm install --save-dev \
-      typescript \
-      tsc-watch \
-      eslint \
-      @typescript-eslint/parser \
-      @typescript-eslint/eslint-plugin \
-      @types/node
-else
-  git clone --branch web git@github.com:mkorman9/node-template.git "${PROJECT_NAME}" && \
-    rm -rf "${PROJECT_NAME}/.git" "${PROJECT_NAME}/README.md" && \
-    sed -i "s/node-template-project/${PROJECT_NAME}/g" "${PROJECT_NAME}/package.json" && \
-    cp "${PROJECT_NAME}/.env.template" "${PROJECT_NAME}/.env" && \
-    cd "${PROJECT_NAME}" && \
-    npm install --save \
-      dotenv \
-      envalid \
-      zod \
-      express \
-      express-async-errors \
-      cors && \
-    npm install --save-dev \
-      typescript \
-      tsc-watch \
-      eslint \
-      @typescript-eslint/parser \
-      @typescript-eslint/eslint-plugin \
-      @types/node \
-      @types/express \
-      @types/cors
+git clone --branch ${SOURCE_BRANCH} git@github.com:mkorman9/node-template.git "${PROJECT_NAME}" && \
+  rm -rf "${PROJECT_NAME}/.git" "${PROJECT_NAME}/README.md" && \
+  sed -i "s/node-template-project/${PROJECT_NAME}/g" "${PROJECT_NAME}/package.json" && \
+  cp "${PROJECT_NAME}/.env.template" "${PROJECT_NAME}/.env" && \
+  cd "${PROJECT_NAME}" && \
+  npm install --save \
+    dotenv \
+    envalid && \
+  npm install --save-dev \
+    typescript \
+    tsc-watch \
+    eslint \
+    @typescript-eslint/parser \
+    @typescript-eslint/eslint-plugin \
+    @types/node
+
+if [[ "${SOURCE_BRANCH}" == "web" ]]; then
+  npm install --save \
+    zod \
+    express \
+    express-async-errors \
+    cors && \
+  npm install --save-dev \
+    @types/express \
+    @types/cors
 fi
 ```
