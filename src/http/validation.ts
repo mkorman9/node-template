@@ -10,13 +10,13 @@ export async function validateRequestBody<TSchema extends z.Schema>(
   schema: TSchema
 ): Promise<z.TypeOf<TSchema>> {
   try {
-    await new Promise<unknown>((resolve, reject) =>
+    await new Promise<void>((resolve, reject) =>
       jsonParser(req, {} as ServerResponse, (err?: Error) => {
         if (err) {
           return reject(err);
         }
 
-        resolve(req.body);
+        resolve();
       })
     );
   } catch (e) {
