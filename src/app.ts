@@ -1,4 +1,4 @@
-import {createApp, appendErrorHandlers} from './http/app_template';
+import {createApp, attachDefaultHandlers} from './http/app_template';
 import config from './config';
 
 const app = createApp({
@@ -8,4 +8,4 @@ const app = createApp({
 
 
 
-export default appendErrorHandlers(app);
+export default attachDefaultHandlers(app);

@@ -16,7 +16,7 @@ export function createApp(opts?: Partial<AppOptions>): Application {
     .use(cors({origin: opts?.corsOrigin}));
 }
 
-export function appendErrorHandlers(app: Application): Application {
+export function attachDefaultHandlers(app: Application): Application {
   app.use((req: Request, res: Response) => {
     res.status(404).json({
       title: 'The request resource was not found',
