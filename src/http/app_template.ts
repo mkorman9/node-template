@@ -19,7 +19,7 @@ export function createApp(opts?: Partial<AppOptions>): Application {
 export function attachDefaultHandlers(app: Application): Application {
   app.use((req: Request, res: Response) => {
     res.status(404).json({
-      title: 'The request resource was not found',
+      title: 'The requested resource was not found',
       type: 'NotFound'
     });
   });
