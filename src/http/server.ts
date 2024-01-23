@@ -14,7 +14,8 @@ export function startServer(server: http.Server, host: string, port: number): Pr
         resolve(addr);
       } else {
         const addrInfo = addr as AddressInfo;
-        resolve(`${addrInfo.address}:${addrInfo.port}`);
+        const host = addrInfo.address.indexOf(':') >= 0 ? `[${addrInfo.address}]` : addrInfo.address;
+        resolve(`${host}:${addrInfo.port}`);
       }
     });
     server.on('error', err => reject(err));
