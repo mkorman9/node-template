@@ -9,14 +9,9 @@ export function createServer(app: Application): http.Server {
 export function startServer(server: http.Server, host: string, port: number): Promise<string> {
   return new Promise((resolve, reject) => {
     server.listen(port, host, () => {
-      const addr = server.address();
-      if (typeof addr === 'string') {
-        resolve(addr);
-      } else {
-        const addrInfo = addr as AddressInfo;
-        const host = addrInfo.address.indexOf(':') >= 0 ? `[${addrInfo.address}]` : addrInfo.address;
-        resolve(`${host}:${addrInfo.port}`);
-      }
+      const addr = server.address() as AddressInfo;
+      const host = addr.address.indexOf(':') >= 0 ? `[${addr.address}]` : addr.address;
+      resolve(`${host}:${addr.port}`);
     });
     server.on('error', err => reject(err));
   });
