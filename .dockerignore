@@ -1,6 +1,6 @@
 .idea/
-dist/
 node_modules/
+dist/
 .env
 .DS_Store
 [Dd]esktop.ini
