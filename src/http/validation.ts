@@ -51,6 +51,7 @@ export function validateParams<TSchema extends z.Schema>(
       });
     }
 
+    req.params = result.data;
     next();
   };
 }
@@ -72,6 +73,7 @@ export function validateQuery<TSchema extends z.Schema>(
       });
     }
 
+    req.query = result.data;
     next();
   };
 }
