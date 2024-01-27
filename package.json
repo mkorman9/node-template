@@ -9,7 +9,7 @@
   "scripts": {
     "lint": "eslint --ext .ts src/",
     "build": "tsc",
-    "start": "tsc-watch --noClear --onSuccess \"node --enable-source-maps .\""
+    "start": "tsc-watch --noClear --onSuccess 'node --enable-source-maps .'"
   },
   "devDependencies": {
   },
