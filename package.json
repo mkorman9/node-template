@@ -8,7 +8,7 @@
   "main": "dist/index.js",
   "scripts": {
     "lint": "eslint --ext .ts src/",
-    "build": "tsc --build",
+    "build": "tsc",
     "start": "tsc-watch --noClear --onSuccess \"node --enable-source-maps .\""
   },
   "devDependencies": {
