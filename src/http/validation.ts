@@ -3,9 +3,9 @@ import z from 'zod';
 
 const jsonMiddleware = express.json();
 
-export function validateBody<TSchema extends z.Schema>(
-  schema: TSchema
-): RequestHandler<unknown, unknown, z.TypeOf<TSchema>, unknown> {
+export function validateBody<TShape extends z.ZodRawShape>(
+  shape: TShape
+): RequestHandler<unknown, unknown, z.TypeOf<z.ZodObject<TShape>>, unknown> {
   return (req, res, next) => {
     jsonMiddleware(req, res, (err?: Error) => {
       if (err) {
@@ -16,7 +16,7 @@ export function validateBody<TSchema extends z.Schema>(
         });
       }
 
-      const result = schema.safeParse(req.body);
+      const result = z.object(shape).safeParse(req.body);
       if (!result.success) {
         return res.status(400).json({
           title: 'Provided request body contains schema violations',
@@ -34,11 +34,11 @@ export function validateBody<TSchema extends z.Schema>(
   };
 }
 
-export function validateParams<TSchema extends z.Schema>(
-  schema: TSchema
-): RequestHandler<z.TypeOf<TSchema>, unknown, unknown, unknown> {
+export function validateParams<TShape extends z.ZodRawShape>(
+  shape: TShape
+): RequestHandler<z.TypeOf<z.ZodObject<TShape>>, unknown, unknown, unknown> {
   return (req, res, next) => {
-    const result = schema.safeParse(req.params);
+    const result = z.object(shape).safeParse(req.params);
     if (!result.success) {
       return res.status(400).json({
         title: 'Provided request path parameters contain schema violations',
@@ -56,11 +56,11 @@ export function validateParams<TSchema extends z.Schema>(
   };
 }
 
-export function validateQuery<TSchema extends z.Schema>(
-  schema: TSchema
-): RequestHandler<unknown, unknown, unknown, z.TypeOf<TSchema>> {
+export function validateQuery<TShape extends z.ZodRawShape>(
+  shape: TShape
+): RequestHandler<unknown, unknown, unknown, z.TypeOf<z.ZodObject<TShape>>> {
   return (req, res, next) => {
-    const result = schema.safeParse(req.query);
+    const result = z.object(shape).safeParse(req.query);
     if (!result.success) {
       return res.status(400).json({
         title: 'Provided request query parameters contain schema violations',
