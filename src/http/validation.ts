@@ -12,7 +12,7 @@ export function validateBody<TShape extends z.ZodRawShape>(
         return res.status(400).json({
           title: 'Provided request body cannot be parsed',
           type: 'MalformedRequestBody',
-          cause: process.env.NODE_ENV === 'production' ? undefined : (err.stack)
+          cause: process.env.NODE_ENV === 'production' ? undefined : err.stack
         });
       }
 
