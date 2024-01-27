@@ -1,11 +1,13 @@
 import express, {RequestHandler} from 'express';
 import z from 'zod';
 
+type TPlaceholder = Record<string, any>;  // eslint-disable-line @typescript-eslint/no-explicit-any
+
 const jsonMiddleware = express.json();
 
 export function validateBody<TShape extends z.ZodRawShape>(
   shape: TShape
-): RequestHandler<unknown, unknown, z.TypeOf<z.ZodObject<TShape>>, unknown> {
+): RequestHandler<TPlaceholder, unknown, z.TypeOf<z.ZodObject<TShape>>, TPlaceholder> {
   return (req, res, next) => {
     jsonMiddleware(req, res, (err?: Error) => {
       if (err) {
@@ -36,7 +38,7 @@ export function validateBody<TShape extends z.ZodRawShape>(
 
 export function validateParams<TShape extends z.ZodRawShape>(
   shape: TShape
-): RequestHandler<z.TypeOf<z.ZodObject<TShape>>, unknown, unknown, unknown> {
+): RequestHandler<z.TypeOf<z.ZodObject<TShape>>, unknown, TPlaceholder, TPlaceholder> {
   return (req, res, next) => {
     const result = z.object(shape).safeParse(req.params);
     if (!result.success) {
@@ -58,7 +60,7 @@ export function validateParams<TShape extends z.ZodRawShape>(
 
 export function validateQuery<TShape extends z.ZodRawShape>(
   shape: TShape
-): RequestHandler<unknown, unknown, unknown, z.TypeOf<z.ZodObject<TShape>>> {
+): RequestHandler<TPlaceholder, unknown, TPlaceholder, z.TypeOf<z.ZodObject<TShape>>> {
   return (req, res, next) => {
     const result = z.object(shape).safeParse(req.query);
     if (!result.success) {
