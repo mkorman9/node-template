@@ -1,7 +1,6 @@
 import express, {Application, NextFunction, Request, Response} from 'express';
 import cors from 'cors';
 import 'express-async-errors';
-import {HTTPResponseError} from './http_error';
 
 export type AppOptions = {
   corsOrigin: string;
@@ -27,10 +26,6 @@ export function attachDefaultHandlers(app: Application): Application {
   app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     if (res.headersSent) {
       return next(err);
-    }
-
-    if (err instanceof HTTPResponseError) {
-      return res.status(err.statusCode).json(err.response);
     }
 
     console.log(`🚫 Unhandled error while processing the request (${req.method} ${req.path}): ${err.stack}`);
