@@ -80,6 +80,7 @@ export function validate<
           });
         }
 
+        req.body = result.data;
         next();
       });
     } else {
