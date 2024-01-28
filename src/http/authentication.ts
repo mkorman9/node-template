@@ -2,7 +2,7 @@ import {RequestHandler} from 'express';
 
 export type AuthLocals<T> = {
   auth: T;
-  [key: string]: any;  // eslint-disable-line @typescript-eslint/no-explicit-any
+  [key: string]: unknown;
 };
 
 export function authenticateToken<TParams, TQuery, TBody, TAuth>(
