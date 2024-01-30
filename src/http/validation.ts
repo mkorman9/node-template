@@ -1,7 +1,7 @@
 import express, {RequestHandler} from 'express';
 import z from 'zod';
 
-type InferredType<T extends z.ZodRawShape> = z.TypeOf<z.ZodObject<T>>;
+type Inferred<T extends z.ZodRawShape> = z.TypeOf<z.ZodObject<T>>;
 
 export type RequestValidators<
   TParamsShape extends z.ZodRawShape,
@@ -22,7 +22,7 @@ export function validate<
   TLocals extends Record<string, unknown>
 >(
   validators: RequestValidators<TParamsShape, TQueryShape, TBodyShape>
-): RequestHandler<InferredType<TParamsShape>, unknown, InferredType<TBodyShape>, InferredType<TQueryShape>, TLocals> {
+): RequestHandler<Inferred<TParamsShape>, unknown, Inferred<TBodyShape>, Inferred<TQueryShape>, TLocals> {
   return (req, res, next) => {
     if (validators.params) {
       const result = z.object(validators.params).safeParse(req.params);
