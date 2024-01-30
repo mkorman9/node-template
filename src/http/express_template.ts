@@ -2,12 +2,12 @@ import express, {Application, NextFunction, Request, Response} from 'express';
 import cors from 'cors';
 import 'express-async-errors';
 
-export type AppOptions = {
+export type ExpressAppOptions = {
   corsOrigin: string;
   trustProxies: boolean;
 };
 
-export function createApp(opts?: Partial<AppOptions>): Application {
+export function createExpressApp(opts?: Partial<ExpressAppOptions>): Application {
   return express()
     .set('trust proxy', opts?.trustProxies ? ['loopback', 'linklocal', 'uniquelocal'] : [])
     .disable('x-powered-by')
