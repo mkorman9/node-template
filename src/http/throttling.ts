@@ -38,10 +38,6 @@ export function throttle<TParams, TQuery, TBody, TLocals extends Record<string, 
     }
 
     res.on('finish', () => {
-      if (!req.ip) {
-        return;
-      }
-
       if (!opts?.statusCodes || opts?.statusCodes.includes(res.statusCode)) {
         entry!.hits += 1;
       }
